@@ -44,9 +44,9 @@ module ActionCable
         @pubsub ||= redis.pubsub
       end
 
-      # The EventMachine Redis instance used by the pubsub adapter.
+      # The Celluloid::IO Redis instance used by the pubsub adapter.
       def redis
-        @redis ||= EM::Hiredis.connect(config.redis[:url]).tap do |redis|
+        @redis ||= Redis.new(driver: :celluloid, url: config.redis[:url]).tap do |redis|
           redis.on(:reconnect_failed) do
             logger.info "[ActionCable] Redis reconnect failed."
             # logger.info "[ActionCable] Redis reconnected. Closing all the open connections."
